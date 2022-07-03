@@ -1,14 +1,7 @@
-import json
-from os import access
-from django.conf import settings
-from django.http import JsonResponse
 from rest_framework import serializers
-
-from apps.users import auth_decorator
 from .models import User
 from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken, UntypedToken
-from rest_framework_simplejwt.serializers import TokenRefreshSerializer, TokenVerifySerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -79,12 +72,3 @@ class CustomTokenRefreshSerializer(serializers.Serializer):
                 "message": "토큰이 잘못되었거나 만료되었습니다.",
                 "result": ""
             })
-
-
-class CustomTokenVerifySerializer(serializers.Serializer):
-    @auth_decorator.auth
-    def validate(self, attrs):
-
-        return {
-            "message": "The token is verified and can be used.",
-        }

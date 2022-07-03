@@ -75,7 +75,6 @@ class PhoneAuth(TimeStampModel):
         }
         res = requests.post(
             ENV.SMS_URL, data=json.dumps(data), headers=headers)
-        print(res.text)
 
     @classmethod
     def check_auth_number(cls, p_num, a_num):
