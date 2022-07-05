@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'apps.users',
 ]
 
@@ -142,7 +143,7 @@ SIMPLE_JWT = {
     'ALGORITHM': 'HS256',
     'AUTH_HEADER_TYPES': ('Bearer',),
     'RORATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_LOTATION': False,
+    'BLACKLIST_AFTER_LOTATION': True,
 }
 
 AUTH_USER_MODEL = 'users.User'
