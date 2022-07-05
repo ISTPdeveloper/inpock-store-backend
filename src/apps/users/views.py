@@ -46,7 +46,7 @@ class LoginAPI(generics.GenericAPIView):
         refresh = RefreshToken.for_user(user)
 
         return JsonResponse({
-            "status": True,
+            "status": 'SUCCESS',
             "message": "로그인에 성공하셨습니다.",
             "result": {
                 'user': UserSerializer(user, context=self.get_serializer_context()).data,
@@ -63,14 +63,14 @@ class AuthSmsSendAPI(APIView):
             p_num = request.data['phone_number']
         except KeyError:
             return JsonResponse({
-                "status": False,
+                "status": 'FAILURE',
                 "message": "인증번호 발송에 실패하였습니다.",
                 "result": "",
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
             PhoneAuth.objects.update_or_create(phone_number=p_num)
             return JsonResponse({
-                "status": True,
+                "status": 'SUCCESS',
                 "message": "성공적으로 인증번호를 발송하였습니다.",
                 "result": "",
             }, status=200)
@@ -84,7 +84,7 @@ class AuthSmsVerifyAPI(APIView):
             a_num = request.query_params['auth_number']
         except KeyError:
             return JsonResponse({
-                "status": False,
+                "status": 'FAILURE',
                 "message": "인증번호 인증에 실패하였습니다.",
                 "result": "",
             }, status=status.HTTP_400_BAD_REQUEST)
@@ -103,7 +103,7 @@ class CustomTokenVerifyView(generics.RetrieveAPIView):
     def get(self, request):
         user = request.user
         return JsonResponse({
-            "status": True,
+            "status": 'SUCCESS',
             "message": "",
             "result": {
                 'id': user.id,

@@ -34,7 +34,7 @@ class TimeStampModel(models.Model):
 
 
 class PhoneAuth(TimeStampModel):
-    phone_number = models.CharField(max_length=11, primary_key=True)
+    phone_number = models.CharField(max_length=11, unique=True)
     auth_number = models.IntegerField()
 
     class Meta:
@@ -84,12 +84,12 @@ class PhoneAuth(TimeStampModel):
         )
         if result:
             return JsonResponse({
-                "status": True,
+                "status": 'SUCCESS',
                 "message": "인증에 성공하셨습니다.",
                 "result": "",
             }, status=200)
         return JsonResponse({
-            "status": False,
+            "status": 'FAILURE',
             "message": "인증에 실패하셨습니다.",
             "result": "",
         }, status=401)
@@ -137,6 +137,8 @@ class User(AbstractUser, TimeStampModel):
     tos_agree = models.BooleanField(default=True)
     sms_agree = models.BooleanField(default=False)
     email_agree = models.BooleanField(default=False)
+    phone_auth = models.ForeignKey(
+        PhoneAuth, null=False, blank=False, on_delete=models.CASCADE)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['name', 'birth_date', 'phone_number']
