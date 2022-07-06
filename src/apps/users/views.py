@@ -80,8 +80,8 @@ class AuthSmsVerifyAPI(APIView):
 
     def get(self, request):
         try:
-            p_num = request.query_params['phone_number']
-            a_num = request.query_params['auth_number']
+            p_num = request.data['phone_number']
+            a_num = request.data['auth_number']
         except KeyError:
             return JsonResponse({
                 "status": 'FAILURE',
