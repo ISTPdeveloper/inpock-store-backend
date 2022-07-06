@@ -78,7 +78,7 @@ class AuthSmsSendAPI(APIView):
 
 class AuthSmsVerifyAPI(APIView):
 
-    def get(self, request):
+    def post(self, request):
         try:
             p_num = request.data['phone_number']
             a_num = request.data['auth_number']
