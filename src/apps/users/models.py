@@ -70,7 +70,7 @@ class PhoneAuth(TimeStampModel):
             'contentType': 'COMM',
             'countryCode': '82',
             'from': ENV.SMS_CALLER,
-            'content': "[짭포크 스토어] 인증 번호 [{}] 를 입력해주세요".format(self.auth_number),
+            'content': "[짭포크 스토어] 인증번호 [{}] 를 입력해주세요".format(self.auth_number),
             'messages': [{'to': self.phone_number}]
         }
         res = requests.post(
