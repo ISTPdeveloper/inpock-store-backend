@@ -86,7 +86,7 @@ class PhoneAuth(TimeStampModel):
             return JsonResponse({
                 "status": 'SUCCESS',
                 "message": "인증에 성공하셨습니다.",
-                "result": "",
+                "result": {"phone_number": p_num},
             }, status=200)
         return JsonResponse({
             "status": 'FAILURE',
