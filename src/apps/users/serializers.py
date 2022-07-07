@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from apps.users.validators import name_validate, password_validate, phone_number_validate, username_validate
 from .models import PhoneAuth, User
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -15,6 +17,14 @@ class RegisterSerializer(serializers.ModelSerializer):
             'password': {'write_only': True}
         }
 
+    def validate(self, validated_data):
+        username_validate(validated_data['username'])
+        password_validate(validated_data['password'])
+        name_validate(validated_data['name'])
+        phone_number_validate(validated_data['phone_number'])
+
+        return validated_data
+
     def create(self, validated_data):
         try:
             phone_id = PhoneAuth.objects.get(
@@ -26,13 +36,14 @@ class RegisterSerializer(serializers.ModelSerializer):
                 birth_date=validated_data['birth_date'],
                 phone_number=validated_data['phone_number'],
                 tos_agree=validated_data['tos_agree'],
-                phone_auth=phone_id
+                phone_auth=phone_id,
             )
+
             return user
         except:
             raise serializers.ValidationError({
                 "status": 'FAILURE',
-                "message": "인증된 폰 번호가 아닙니다. 인증하신 폰 번호를 입력해주세요.",
+                "message": "인증된 폰 번호가 아닙니다. 인증하신 폰 번호를 입력해주세요",
                 "result": ""
             })
 
@@ -49,7 +60,7 @@ class LoginSerializer(serializers.Serializer):
 
         raise serializers.ValidationError({
             "status": 'FAILURE',
-            "message": "아이디 혹은 비밀번호가 잘못되었습니다. 다시 확인해주세요.",
+            "message": "아이디 혹은 비밀번호가 일치하지 않습니다",
             "result": ""
         })
 
@@ -79,6 +90,6 @@ class CustomTokenRefreshSerializer(serializers.Serializer):
         except:
             raise serializers.ValidationError({
                 "status": 'FAILURE',
-                "message": "토큰이 잘못되었거나 만료되었습니다.",
+                "message": "토큰이 잘못되었거나 만료되었습니다",
                 "result": ""
             })

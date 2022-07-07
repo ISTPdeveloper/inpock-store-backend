@@ -34,7 +34,8 @@ class TimeStampModel(models.Model):
 
 
 class PhoneAuth(TimeStampModel):
-    phone_number = models.CharField(max_length=11, unique=True)
+    phone_number = models.CharField(
+        max_length=11, null=False, blank=False, unique=True)
     auth_number = models.IntegerField()
 
     class Meta:
@@ -70,7 +71,7 @@ class PhoneAuth(TimeStampModel):
             'contentType': 'COMM',
             'countryCode': '82',
             'from': ENV.SMS_CALLER,
-            'content': "[짭포크 스토어] 인증번호 [{}] 를 입력해주세요".format(self.auth_number),
+            'content': "[인포크 스토어] 인증번호 [{}] 를 입력해주세요".format(self.auth_number),
             'messages': [{'to': self.phone_number}]
         }
         res = requests.post(
@@ -85,12 +86,12 @@ class PhoneAuth(TimeStampModel):
         if result:
             return JsonResponse({
                 "status": 'SUCCESS',
-                "message": "인증에 성공하셨습니다.",
+                "message": "인증에 성공하셨습니다",
                 "result": {"phone_number": p_num},
             }, status=200)
         return JsonResponse({
             "status": 'FAILURE',
-            "message": "인증에 실패하셨습니다.",
+            "message": "인증에 실패하셨습니다",
             "result": "",
         }, status=401)
 
@@ -131,9 +132,10 @@ class User(AbstractUser, TimeStampModel):
     last_login = models.DateTimeField(null=True, blank=True)
     email = models.EmailField(max_length=100, null=True, blank=True)
     username = models.CharField(max_length=30, unique=True)
-    name = models.CharField(max_length=4)
-    birth_date = models.DateField()
-    phone_number = models.CharField(max_length=11, unique=True)
+    name = models.CharField(max_length=100)
+    birth_date = models.DateField(null=True, blank=True)
+    phone_number = models.CharField(
+        max_length=100, unique=True)
     tos_agree = models.BooleanField(default=True)
     sms_agree = models.BooleanField(default=False)
     email_agree = models.BooleanField(default=False)
@@ -141,7 +143,7 @@ class User(AbstractUser, TimeStampModel):
         PhoneAuth, null=False, blank=False, on_delete=models.CASCADE)
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['name', 'birth_date', 'phone_number']
+    REQUIRED_FIELDS = ['name', 'phone_number']
 
     objects = UserManager()
 

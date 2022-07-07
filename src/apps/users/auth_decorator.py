@@ -11,7 +11,7 @@ def auth(func):
         if auth_token == None:
             return JsonResponse({
                 "status": 'FAILURE',
-                "message": "토큰을 입력해주세요.",
+                "message": "토큰을 입력해주세요",
                 "result": "",
             }, status=401)
 
@@ -27,7 +27,7 @@ def auth(func):
         except:
             return JsonResponse({
                 "status": 'FAILURE',
-                "message": "토큰이 잘못되었거나 만료되었습니다.",
+                "message": "토큰이 잘못되었거나 만료되었습니다",
                 "result": "",
             }, status=401)
 

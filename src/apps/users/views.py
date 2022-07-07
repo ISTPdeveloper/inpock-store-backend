@@ -24,7 +24,7 @@ class RegisterAPI(generics.GenericAPIView):
 
         return JsonResponse({
             "status": True,
-            "message": "회원가입에 성공하셨습니다.",
+            "message": "회원가입에 성공하셨습니다",
             "result": {
                 'user': UserSerializer(user, context=self.get_serializer_context()).data,
                 'access_token': str(refresh.access_token),
@@ -47,7 +47,7 @@ class LoginAPI(generics.GenericAPIView):
 
         return JsonResponse({
             "status": 'SUCCESS',
-            "message": "로그인에 성공하셨습니다.",
+            "message": "로그인에 성공하셨습니다",
             "result": {
                 'user': UserSerializer(user, context=self.get_serializer_context()).data,
                 'access_token': str(refresh.access_token),
@@ -61,17 +61,24 @@ class AuthSmsSendAPI(APIView):
     def post(self, request):
         try:
             p_num = request.data['phone_number']
+            phone_number_validate(p_num)
         except KeyError:
             return JsonResponse({
                 "status": 'FAILURE',
-                "message": "인증번호 발송에 실패하였습니다.",
+                "message": "인증번호 발송에 실패하였습니다",
                 "result": "",
             }, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return JsonResponse({
+                "status": 'FAILURE',
+                "message": "10자리 혹은 11자리 국내 휴대폰 번호를 입력해주세요",
+                "result": ""
+            })
         else:
             PhoneAuth.objects.update_or_create(phone_number=p_num)
             return JsonResponse({
                 "status": 'SUCCESS',
-                "message": "성공적으로 인증번호를 발송하였습니다.",
+                "message": "성공적으로 인증번호를 발송하였습니다",
                 "result": "",
             }, status=200)
 
@@ -85,7 +92,7 @@ class AuthSmsVerifyAPI(APIView):
         except KeyError:
             return JsonResponse({
                 "status": 'FAILURE',
-                "message": "인증번호 인증에 실패하였습니다.",
+                "message": "인증번호가 일치하지 않습니다",
                 "result": "",
             }, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -118,6 +125,6 @@ class CustomBlacklistRefreshView(APIView):
         token.blacklist()
         return JsonResponse({
             "status": 'SUCCESS',
-            "message": "로그아웃에 성공하셨습니다.",
+            "message": "로그아웃에 성공하셨습니다",
             "result": "",
         }, status=200)
