@@ -1,11 +1,12 @@
 import jwt
 from django.http import JsonResponse
-from .models import User
+from ...users.models import User
 import config.settings.my_settings as ENV
 
 
 def auth(func):
     def wrapper(self, request, **kwargs):
+        print(request.headers)
         auth_token = request.headers.get("Authorization", None)
         auth_token = str.replace(str(auth_token), 'Bearer ', '')
         if auth_token == None:

@@ -1,9 +1,9 @@
 from rest_framework import serializers
-
-from apps.users.validators import name_validate, password_validate, phone_number_validate, username_validate
-from .models import PhoneAuth, User
+from apps.core.regex import name_validate, password_validate, phone_number_validate, username_validate
 from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken
+from apps.users.models.phone_auth import PhoneAuth
+
+from apps.users.models.user import User
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -40,12 +40,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             )
 
             return user
-        except:
-            raise serializers.ValidationError({
-                "status": 'FAILURE',
-                "message": "인증된 폰 번호가 아닙니다. 인증하신 폰 번호를 입력해주세요",
-                "result": ""
-            })
+        except PhoneAuth.DoesNotExist:
+            raise serializers.ValidationError(
+                "인증된 폰 번호가 아닙니다. 인증하신 폰 번호를 입력해주세요")
 
 
 class LoginSerializer(serializers.Serializer):
@@ -58,11 +55,7 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
 
-        raise serializers.ValidationError({
-            "status": 'FAILURE',
-            "message": "아이디 혹은 비밀번호가 일치하지 않습니다",
-            "result": ""
-        })
+        raise serializers.ValidationError("아이디 혹은 비밀번호가 일치하지 않아요")
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -70,26 +63,3 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'name', 'birth_date', 'phone_number']
-
-
-class CustomTokenRefreshSerializer(serializers.Serializer):
-    refresh_token = serializers.CharField()
-
-    def validate(self, attrs):
-        try:
-            refresh = RefreshToken(attrs['refresh_token'])
-
-            data = {
-                "status": 'SUCCESS',
-                "message": "",
-                "result": {
-                    'access_token': str(refresh.access_token),
-                }
-            }
-            return data
-        except:
-            raise serializers.ValidationError({
-                "status": 'FAILURE',
-                "message": "토큰이 잘못되었거나 만료되었습니다",
-                "result": ""
-            })
