@@ -10,6 +10,8 @@ urlpatterns = [
     path('sms', AuthSmsSendAPI.as_view(), name='sms_send'),
     path('sms/verify', AuthSmsVerifyAPI.as_view(), name='sms_verify'),
 
+    path('register/seller', SellerRegisterAPI.as_view(), name='seller_register'),
+
     path('detail', CustomTokenVerifyView.as_view(), name='get_user'),
     path('token/refresh', CustomTokenRefreshView.as_view(), name='token_refresh'),
 ]
